@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - ShopEasy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold text-primary" href="index.html">
+                <i class="bi bi-shop"></i> ShopEasy
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item me-3" id="usernameDisplay" style="display:none;">
+                        <span class="navbar-text">
+                            <i class="bi bi-person-circle"></i> <span id="displayUsername"></span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container my-5">
+        <h2 class="mb-4">Checkout</h2>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Delivery Address</h5>
+                        <button class="btn btn-sm btn-primary" onclick="showAddressForm()">
+                            <i class="bi bi-plus-circle"></i> Add New Address
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="addressesList"></div>
+
+                        <div id="addressForm" style="display:none;" class="border-top pt-3 mt-3">
+                            <h6>Add/Edit Address</h6>
+                            <form id="newAddressForm">
+                                <input type="hidden" id="addressId">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" id="addressName" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Phone Number</label>
+                                        <input type="tel" class="form-control" id="addressPhone" required>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label class="form-label">Street Address</label>
+                                        <input type="text" class="form-control" id="addressStreet" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">City</label>
+                                        <input type="text" class="form-control" id="addressCity" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">State</label>
+                                        <input type="text" class="form-control" id="addressState" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Pincode</label>
+                                        <input type="text" class="form-control" id="addressPincode" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Address</button>
+                                <button type="button" class="btn btn-secondary" onclick="hideAddressForm()">Cancel</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Payment Method</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="cardPayment" value="card" checked>
+                            <label class="form-check-label" for="cardPayment">
+                                <i class="bi bi-credit-card"></i> Credit/Debit Card
+                            </label>
+                        </div>
+                        <div id="cardDetails" class="ms-4 mb-3">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label">Card Number</label>
+                                    <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY" maxlength="5">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">CVV</label>
+                                    <input type="text" class="form-control" id="cvv" placeholder="123" maxlength="3">
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label">Cardholder Name</label>
+                                    <input type="text" class="form-control" id="cardholderName">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="paypalPayment" value="paypal">
+                            <label class="form-check-label" for="paypalPayment">
+                                <i class="bi bi-paypal"></i> PayPal
+                            </label>
+                        </div>
+                        <div id="paypalDetails" style="display:none;" class="ms-4 mb-3">
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle"></i> You will be redirected to PayPal to complete your payment.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card sticky-top" style="top: 100px;">
+                    <div class="card-body">
+                        <h5 class="card-title">Order Summary</h5>
+                        <hr>
+                        <div id="orderItems" class="mb-3"></div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span>
+                            <span id="summarySubtotal">₹0</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Discount:</span>
+                            <span class="text-success" id="summaryDiscount">-₹0</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Delivery:</span>
+                            <span id="summaryDelivery">₹0</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-3">
+                            <strong>Total:</strong>
+                            <strong id="summaryTotal">₹0</strong>
+                        </div>
+                        <div class="alert alert-success small">
+                            <i class="bi bi-truck"></i> Expected Delivery: <strong id="expectedDeliveryDate"></strong>
+                        </div>
+                        <button class="btn btn-primary w-100" onclick="placeOrder()">Place Order</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="successModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-5">
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                    <h4 class="mt-3">Order Placed Successfully!</h4>
+                    <p class="text-muted">Your Order ID: <strong id="displayOrderId"></strong></p>
+                    <p class="text-muted">Expected Delivery: <strong id="displayDeliveryDate"></strong></p>
+                    <button class="btn btn-primary" onclick="goToOrders()">View Orders</button>
+                    <button class="btn btn-outline-primary" onclick="goToHome()">Continue Shopping</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2025 ShopEasy. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        let selectedAddressId = null;
+        function displayAddresses() {
+            const addresses = getAddresses();
+            const addressesList = document.getElementById('addressesList');
+
+            if (addresses.length === 0) {
+                addressesList.innerHTML = '<p class="text-muted">No saved addresses. Please add a new address.</p>';
+                return;
+            }
+            addressesList.innerHTML = addresses.map(addr => `
+                <div class="form-check border rounded p-3 mb-2">
+                    <input class="form-check-input" type="radio" name="selectedAddress" id="addr${addr.id}" value="${addr.id}" ${selectedAddressId === addr.id ? 'checked' : ''} onchange="selectAddress(${addr.id})">
+                    <label class="form-check-label w-100" for="addr${addr.id}">
+                        <strong>${addr.name}</strong> - ${addr.phone}<br>
+                        ${addr.street}, ${addr.city}, ${addr.state} ${addr.pincode}
+                        <div class="mt-2">
+                            <button class="btn btn-sm btn-outline-primary" onclick="editAddress(${addr.id})">Edit</button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteAddress(${addr.id})">Delete</button>
+                        </div>
+                    </label>
+                </div>
+            `).join('');
+
+            if (!selectedAddressId && addresses.length > 0) {
+                selectedAddressId = addresses[0].id;
+            }
+        }
+        function selectAddress(addressId) {
+            selectedAddressId = addressId;
+        }
+        function showAddressForm() {
+            document.getElementById('addressForm').style.display = 'block';
+            document.getElementById('newAddressForm').reset();
+            document.getElementById('addressId').value = '';
+        }
+        function hideAddressForm() {
+            document.getElementById('addressForm').style.display = 'none';
+            document.getElementById('newAddressForm').reset();
+        }
+        function editAddress(addressId) {
+            const addresses = getAddresses();
+            const address = addresses.find(a => a.id === addressId);
+            if (!address) return;
+            document.getElementById('addressId').value = address.id;
+            document.getElementById('addressName').value = address.name;
+            document.getElementById('addressPhone').value = address.phone;
+            document.getElementById('addressStreet').value = address.street;
+            document.getElementById('addressCity').value = address.city;
+            document.getElementById('addressState').value = address.state;
+            document.getElementById('addressPincode').value = address.pincode;
+            showAddressForm();
+        }
+        function deleteAddress(addressId) {
+            if (confirm('Are you sure you want to delete this address?')) {
+                removeAddress(addressId);
+                displayAddresses();
+            }
+        }
+        document.getElementById('newAddressForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const addressData = {
+                id: document.getElementById('addressId').value || Date.now(),
+                name: document.getElementById('addressName').value,
+                phone: document.getElementById('addressPhone').value,
+                street: document.getElementById('addressStreet').value,
+                city: document.getElementById('addressCity').value,
+                state: document.getElementById('addressState').value,
+                pincode: document.getElementById('addressPincode').value
+            };
+            saveAddress(addressData);
+            hideAddressForm();
+            displayAddresses();
+        });
+        function displayOrderSummary() {
+            const cart = getCart();
+            const orderItems = document.getElementById('orderItems');
+            let subtotal = 0;
+            let totalDiscount = 0;
+            orderItems.innerHTML = cart.map(item => {
+                const itemTotal = item.price * item.quantity;
+                const discountAmount = (item.price * item.discount / 100) * item.quantity;
+                subtotal += itemTotal;
+                totalDiscount += discountAmount;
+                return `
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span>${item.title} x ${item.quantity}</span>
+                        <span>₹${(itemTotal - discountAmount).toFixed(2)}</span>
+                    </div>
+                `;
+            }).join('');
+            const delivery = subtotal > 500 ? 0 : 50;
+            const total = subtotal - totalDiscount + delivery;
+            document.getElementById('summarySubtotal').textContent = `₹${subtotal.toFixed(2)}`;
+            document.getElementById('summaryDiscount').textContent = `-₹${totalDiscount.toFixed(2)}`;
+            document.getElementById('summaryDelivery').textContent = delivery === 0 ? 'FREE' : `₹${delivery}`;
+            document.getElementById('summaryTotal').textContent = `₹${total.toFixed(2)}`;
+            const expectedDate = new Date();
+            expectedDate.setDate(expectedDate.getDate() + 3);
+            document.getElementById('expectedDeliveryDate').textContent = expectedDate.toLocaleDateString();
+        }
+        document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('cardDetails').style.display = this.value === 'card' ? 'block' : 'none';
+                document.getElementById('paypalDetails').style.display = this.value === 'paypal' ? 'block' : 'none';
+            });
+        });
+        function placeOrder() {
+            if (!selectedAddressId) {
+                alert('Please select a delivery address');
+                return;
+            }
+            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            if (paymentMethod === 'card') {
+                const cardNumber = document.getElementById('cardNumber').value;
+                const expiryDate = document.getElementById('expiryDate').value;
+                const cvv = document.getElementById('cvv').value;
+                const cardholderName = document.getElementById('cardholderName').value;
+                if (!cardNumber || !expiryDate || !cvv || !cardholderName) {
+                    alert('Please fill in all card details');
+                    return;
+                }
+            }
+            const cart = getCart();
+            if (cart.length === 0) {
+                alert('Your cart is empty');
+                return;
+            }
+            const addresses = getAddresses();
+            const selectedAddress = addresses.find(a => a.id == selectedAddressId);
+            let subtotal = 0;
+            let totalDiscount = 0;
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                const discountAmount = (item.price * item.discount / 100) * item.quantity;
+                subtotal += itemTotal;
+                totalDiscount += discountAmount;
+            });
+            const delivery = subtotal > 500 ? 0 : 50;
+            const total = subtotal - totalDiscount + delivery;
+            const expectedDate = new Date();
+            expectedDate.setDate(expectedDate.getDate() + 3);
+            const order = {
+                orderId: 'ORD' + Date.now(),
+                orderDate: new Date().toISOString(),
+                items: cart,
+                address: selectedAddress,
+                paymentMethod: paymentMethod,
+                subtotal: subtotal,
+                discount: totalDiscount,
+                delivery: delivery,
+                total: total,
+                status: 'Processing',
+                expectedDelivery: expectedDate.toISOString()
+            };
+            saveOrder(order);
+            clearCart();
+            document.getElementById('displayOrderId').textContent = order.orderId;
+            document.getElementById('displayDeliveryDate').textContent = expectedDate.toLocaleDateString();
+            const modal = new bootstrap.Modal(document.getElementById('successModal'));
+            modal.show();
+        }
+        function goToOrders() {
+            window.location.href = 'orders.html';
+        }
+        function goToHome() {
+            window.location.href = 'index.html';
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!isLoggedIn()) {
+                alert('Please login to checkout');
+                window.location.href = 'login.html';
+                return;
+            }
+            const cart = getCart();
+            if (cart.length === 0) {
+                alert('Your cart is empty');
+                window.location.href = 'cart.html';
+                return;
+            }
+            displayAddresses();
+            displayOrderSummary();
+        });
+    </script>
+</body>
+</html>
